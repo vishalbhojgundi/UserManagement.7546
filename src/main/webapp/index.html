@@ -2,40 +2,48 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>User Registration</title>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>User Management System</title>
 
     <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
-<div class="page">
+<div class="container">
 
-    <div class="registration-card">
+    <div class="card">
 
-        <div class="header">
-            <div class="icon">👤</div>
+        <h1>User Management System</h1>
 
-            <h1>User Registration</h1>
+        <p class="subtitle">
+            Register a new user
+        </p>
 
-            <p>Enter your details to register</p>
-        </div>
+        <!-- Success Message -->
+        <div id="successMessage"
+             class="success-message">
 
-        <!-- Success message -->
-        <div id="successMessage" class="success-message">
             User registered successfully!
+
         </div>
 
-        <form id="userForm" action="register" method="post">
+        <form id="userForm"
+              action="register"
+              method="post">
 
             <!-- Name -->
+
             <div class="form-group">
 
                 <label for="name">
-                    User Name
+                    Full Name
                 </label>
 
                 <input
@@ -48,12 +56,15 @@
                         required
                 >
 
-                <small id="nameError" class="error"></small>
+                <small id="nameError"
+                       class="error">
+                </small>
 
             </div>
 
 
             <!-- Gender -->
+
             <div class="form-group">
 
                 <label for="gender">
@@ -63,8 +74,7 @@
                 <select
                         id="gender"
                         name="gender"
-                        required
-                >
+                        required>
 
                     <option value="">
                         Select Gender
@@ -84,48 +94,57 @@
 
                 </select>
 
-                <small id="genderError" class="error"></small>
+                <small id="genderError"
+                       class="error">
+                </small>
 
             </div>
 
 
             <!-- Email -->
+
             <div class="form-group">
 
                 <label for="email">
-                    Email Address
+                    Email
                 </label>
 
                 <input
                         type="email"
                         id="email"
                         name="email"
-                        placeholder="example@gmail.com"
+                        placeholder="Enter your email"
+                        maxlength="100"
                         required
                 >
 
-                <small id="emailError" class="error"></small>
+                <small id="emailError"
+                       class="error">
+                </small>
 
             </div>
 
 
             <!-- Buttons -->
-            <div class="buttons">
+
+            <div class="button-group">
 
                 <button
                         type="submit"
-                        id="submitButton"
-                        class="submit-btn"
-                >
+                        id="saveButton"
+                        class="save-button">
+
                     Save User
+
                 </button>
 
                 <button
                         type="button"
-                        id="refreshButton"
-                        class="refresh-btn"
-                >
-                    ↻ Clear
+                        id="clearButton"
+                        class="clear-button">
+
+                    Clear
+
                 </button>
 
             </div>
@@ -139,138 +158,108 @@
 
 <script>
 
-    const form = document.getElementById("userForm");
+    const form =
+        document.getElementById("userForm");
 
-    const nameInput = document.getElementById("name");
-    const genderInput = document.getElementById("gender");
-    const emailInput = document.getElementById("email");
+    const nameInput =
+        document.getElementById("name");
 
-    const nameError = document.getElementById("nameError");
-    const genderError = document.getElementById("genderError");
-    const emailError = document.getElementById("emailError");
+    const genderInput =
+        document.getElementById("gender");
 
-    const submitButton = document.getElementById("submitButton");
+    const emailInput =
+        document.getElementById("email");
 
-    const refreshButton = document.getElementById("refreshButton");
+    const saveButton =
+        document.getElementById("saveButton");
 
-    const successMessage = document.getElementById("successMessage");
-
-
-    // Hide success message initially
-    successMessage.style.display = "none";
+    const clearButton =
+        document.getElementById("clearButton");
 
 
-    // Show success message after redirect
-    const params = new URLSearchParams(window.location.search);
+    // -----------------------------
+    // FORM VALIDATION
+    // -----------------------------
 
-    if (params.get("success") === "1") {
+    form.addEventListener("submit", function(event) {
 
-        successMessage.style.display = "block";
+        let valid = true;
 
-    }
+        const name =
+            nameInput.value.trim();
+
+        const gender =
+            genderInput.value;
+
+        const email =
+            emailInput.value.trim();
 
 
-    // Name validation
-    function validateName() {
+        // Clear previous errors
 
-        const name = nameInput.value.trim();
+        document.getElementById("nameError")
+            .textContent = "";
 
-        const namePattern = /^[A-Za-z ]+$/;
+        document.getElementById("genderError")
+            .textContent = "";
 
-        if (name === "") {
+        document.getElementById("emailError")
+            .textContent = "";
 
-            nameError.textContent = "Name is required.";
-            return false;
 
-        }
+        // Name validation
+
+        const namePattern =
+            /^[A-Za-z ]+$/;
 
         if (name.length < 2) {
 
-            nameError.textContent = "Name must contain at least 2 characters.";
-            return false;
+            document.getElementById("nameError")
+                .textContent =
+                "Name must contain at least 2 characters.";
 
-        }
+            valid = false;
 
-        if (!namePattern.test(name)) {
+        } else if (!namePattern.test(name)) {
 
-            nameError.textContent =
+            document.getElementById("nameError")
+                .textContent =
                 "Name can contain only letters and spaces.";
 
-            return false;
-
+            valid = false;
         }
 
-        nameError.textContent = "";
 
-        return true;
-    }
+        // Gender validation
 
+        if (gender === "") {
 
-    // Gender validation
-    function validateGender() {
+            document.getElementById("genderError")
+                .textContent =
+                "Please select gender.";
 
-        if (genderInput.value === "") {
-
-            genderError.textContent = "Please select your gender.";
-
-            return false;
+            valid = false;
         }
 
-        genderError.textContent = "";
 
-        return true;
-    }
-
-
-    // Email validation
-    function validateEmail() {
-
-        const email = emailInput.value.trim();
+        // Email validation
 
         const emailPattern =
             /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        if (email === "") {
-
-            emailError.textContent =
-                "Email is required.";
-
-            return false;
-        }
-
         if (!emailPattern.test(email)) {
 
-            emailError.textContent =
-                "Please enter a valid email address.";
+            document.getElementById("emailError")
+                .textContent =
+                "Please enter a valid email.";
 
-            return false;
+            valid = false;
         }
 
-        emailError.textContent = "";
 
-        return true;
-    }
+        // Stop form if invalid
 
-
-    // Validate while typing
-    nameInput.addEventListener("input", validateName);
-
-    genderInput.addEventListener("change", validateGender);
-
-    emailInput.addEventListener("input", validateEmail);
-
-
-    // Form submit
-    form.addEventListener("submit", function(event) {
-
-        const validName = validateName();
-
-        const validGender = validateGender();
-
-        const validEmail = validateEmail();
-
-
-        if (!validName || !validGender || !validEmail) {
+        if (!valid) {
 
             event.preventDefault();
 
@@ -278,37 +267,60 @@
         }
 
 
-        // Prevent double clicking
-        submitButton.disabled = true;
+        // Prevent double-click / duplicate submission
 
-        submitButton.textContent = "Saving...";
+        saveButton.disabled = true;
+
+        saveButton.textContent =
+            "Saving...";
 
     });
 
 
-    // Clear / Refresh button
-    refreshButton.addEventListener("click", function() {
+    // -----------------------------
+    // CLEAR BUTTON
+    // -----------------------------
 
-        form.reset();
+    clearButton.addEventListener(
+        "click",
+        function() {
 
-        nameError.textContent = "";
+            form.reset();
 
-        genderError.textContent = "";
+            document.getElementById("nameError")
+                .textContent = "";
 
-        emailError.textContent = "";
+            document.getElementById("genderError")
+                .textContent = "";
 
-        successMessage.style.display = "none";
+            document.getElementById("emailError")
+                .textContent = "";
 
-        nameInput.focus();
+            saveButton.disabled = false;
 
-        // Remove ?success=1 from URL
-        window.history.replaceState(
-            {},
-            document.title,
-            window.location.pathname
+            saveButton.textContent =
+                "Save User";
+        }
+    );
+
+
+    // -----------------------------
+    // SUCCESS MESSAGE
+    // -----------------------------
+
+    const urlParams =
+        new URLSearchParams(
+            window.location.search
         );
 
-    });
+    if (
+        urlParams.get("success") === "1"
+    ) {
+
+        document.getElementById(
+            "successMessage"
+        ).style.display = "block";
+    }
 
 </script>
 

@@ -19,13 +19,11 @@ public class UserServlet extends HttpServlet {
             HttpServletResponse response)
             throws ServletException, IOException {
 
-        // Get data from HTML form
         String name = request.getParameter("name");
         String gender = request.getParameter("gender");
         String email = request.getParameter("email");
 
-
-        // Remove extra spaces
+        // Remove unnecessary spaces
         if (name != null) {
             name = name.trim();
         }
@@ -34,8 +32,10 @@ public class UserServlet extends HttpServlet {
             email = email.trim();
         }
 
+        // -----------------------------
+        // SERVER-SIDE VALIDATION
+        // -----------------------------
 
-        // Server-side validation
         if (name == null ||
                 name.isEmpty() ||
                 !name.matches("[A-Za-z ]{2,50}")) {
@@ -48,11 +48,10 @@ public class UserServlet extends HttpServlet {
             return;
         }
 
-
         if (gender == null ||
-                (!gender.equals("Male") &&
-                        !gender.equals("Female") &&
-                        !gender.equals("Other"))) {
+                (!gender.equals("Male")
+                        && !gender.equals("Female")
+                        && !gender.equals("Other"))) {
 
             response.sendError(
                     HttpServletResponse.SC_BAD_REQUEST,
@@ -62,11 +61,9 @@ public class UserServlet extends HttpServlet {
             return;
         }
 
-
         if (email == null ||
                 !email.matches(
-                        "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"
-                )) {
+                        "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
 
             response.sendError(
                     HttpServletResponse.SC_BAD_REQUEST,
@@ -76,48 +73,34 @@ public class UserServlet extends HttpServlet {
             return;
         }
 
+        // -----------------------------
+        // INSERT INTO DATABASE
+        // -----------------------------
 
-        // SQL query
         String sql =
                 "INSERT INTO users (name, gender, email) " +
                         "VALUES (?, ?, ?)";
 
-
         try (
-                Connection con =
+                Connection connection =
                         DBConnection.getConnection();
 
-                PreparedStatement ps =
-                        con.prepareStatement(sql)
+                PreparedStatement statement =
+                        connection.prepareStatement(sql)
         ) {
 
-            ps.setString(1, name);
+            statement.setString(1, name);
+            statement.setString(2, gender);
+            statement.setString(3, email);
 
-            ps.setString(2, gender);
-
-            ps.setString(3, email);
-
-
-            int rows =
-                    ps.executeUpdate();
-
+            int rows = statement.executeUpdate();
 
             if (rows > 0) {
 
-                /*
-                 * IMPORTANT:
-                 *
-                 * Redirect after POST.
-                 *
-                 * This prevents the browser from
-                 * submitting the same POST again
-                 * when the user refreshes the page.
-                 */
-
+                // Post/Redirect/Get
                 response.sendRedirect(
                         "index.html?success=1"
                 );
-
             }
 
         } catch (Exception e) {
@@ -126,8 +109,7 @@ public class UserServlet extends HttpServlet {
 
             response.sendError(
                     HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                    "Unable to save user: "
-                            + e.getMessage()
+                    "Unable to save user: " + e.getMessage()
             );
         }
     }

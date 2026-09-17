@@ -2,31 +2,23 @@ package org.example;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 
 public class DBConnection {
 
     private static final String URL =
-            "jdbc:mysql://localhost:3306/userdb";
+            "BD_Server";
 
-    private static final String USER =
-            "root";
+    private static final String USERNAME = "DB_Root";
 
-    private static final String PASSWORD =
-            "Vishal@6610";
+    private static final String PASSWORD = "DB_Password";
 
-    public static Connection getConnection()
-            throws SQLException {
+    public static Connection getConnection() throws Exception {
 
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new SQLException("MySQL JDBC Driver not found", e);
-        }
+        Class.forName("com.mysql.cj.jdbc.Driver");
 
         return DriverManager.getConnection(
                 URL,
-                USER,
+                USERNAME,
                 PASSWORD
         );
     }
