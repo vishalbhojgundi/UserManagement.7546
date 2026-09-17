@@ -5,21 +5,22 @@ import java.sql.DriverManager;
 
 public class DBConnection {
 
-    private static final String URL =
-            "DB-Connection";
-
-    private static final String USERNAME = "DB-Name";
-
-    private static final String PASSWORD = "DB-Passwordgit";
-
     public static Connection getConnection() throws Exception {
+
+        String databaseUrl = System.getenv("MYSQL_PUBLIC_URL");
+
+        if (databaseUrl == null || databaseUrl.isEmpty()) {
+            throw new Exception("MYSQL_PUBLIC_URL is not configured.");
+        }
+
+        // Railway gives: mysql://...
+        // JDBC needs: jdbc:mysql://...
+        if (databaseUrl.startsWith("mysql://")) {
+            databaseUrl = "jdbc:" + databaseUrl;
+        }
 
         Class.forName("com.mysql.cj.jdbc.Driver");
 
-        return DriverManager.getConnection(
-                URL,
-                USERNAME,
-                PASSWORD
-        );
+        return DriverManager.getConnection(databaseUrl);
     }
 }
