@@ -6,11 +6,11 @@ import java.sql.DriverManager;
 public class DBConnection {
 
     private static final String URL =
-            "BD_Server";
+            "DB-Connection";
 
-    private static final String USERNAME = "DB_Root";
+    private static final String USERNAME = "DB-Name";
 
-    private static final String PASSWORD = "DB_Password";
+    private static final String PASSWORD = "DB-Passwordgit";
 
     public static Connection getConnection() throws Exception {
 
